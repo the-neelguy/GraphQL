@@ -5,8 +5,10 @@ from models import Students as StudentModel, session
 class Students(SQLAlchemyObjectType):
     class Meta:
         model = StudentModel
+        interfaces = (graphene.relay.Node,)
 
 class Query(graphene.ObjectType):
+    node = graphene.relay.Node.Field()
     all_students = SQLAlchemyConnectionField(Students.connection)
     student = graphene.Field(Students, id=graphene.Int())
     
