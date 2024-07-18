@@ -12,13 +12,17 @@ class Query(graphene.ObjectType):
     all_students = SQLAlchemyConnectionField(Students.connection)
     student = graphene.Field(Students, id=graphene.Int())
     
-    def resolve_all_students(self, info):
+    def resolve_all_students(self, info, **args):
         query = Students.get_query(info)
+        print("Query Object:", query)        # troubleshooting query
+        sort = args.get('sort', None)
+        if sort:
+            query = query.order_by(sort)
         return query.all()
     
-    def resolve_user(self, info, id):
+    def resolve_student(self, info, id):
         query = Students.get_query(info)
-        return query.get(id)
+        return query.filter(StudentModel.id == id).first()
 
 class CreateStudent(graphene.Mutation):
     class Arguments:
