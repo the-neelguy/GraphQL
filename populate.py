@@ -7,6 +7,7 @@ students = [
     Students(name="Lando Norris", age=29, emailid="norris.vroom@mclaren.com", contact=7891234560),
     Students(name="George Russell", age=30, emailid="george.vroom@mercedes.com", contact=9874563210),
     Students(name="Carlos Sainz", age=21, emailid="carlos.vroom@ferrari.com", contact=1237890564),
+    Students(name="Fernando Alonso", age=29, emailid="alonso.vroom@astonmartin.com", contact=6541329872)
 ]
 
 session.add_all(students)
