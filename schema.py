@@ -1,6 +1,6 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from models import Students as StudentModel, session
+from models import Students as StudentModel
 
 class Students(SQLAlchemyObjectType):
     class Meta:
@@ -11,18 +11,14 @@ class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
     all_students = SQLAlchemyConnectionField(Students.connection)
     student = graphene.Field(Students, id=graphene.Int())
-    
+
     def resolve_all_students(self, info, **args):
         query = Students.get_query(info)
-        print("Query Object:", query)        # troubleshooting query
-        sort = args.get('sort', None)
-        if sort:
-            query = query.order_by(sort)
         return query.all()
     
     def resolve_student(self, info, id):
         query = Students.get_query(info)
-        return query.filter(StudentModel.id == id).first()
+        return query.get(id)
 
 class CreateStudent(graphene.Mutation):
     class Arguments:
@@ -35,6 +31,7 @@ class CreateStudent(graphene.Mutation):
     
     def mutate(self, info, name, age, emailid, contact):
         student = StudentModel(name=name, age=age, emailid=emailid, contact=contact)
+        session = info.context['session']
         session.add(student)
         session.commit()
         return CreateStudent(student=student)
